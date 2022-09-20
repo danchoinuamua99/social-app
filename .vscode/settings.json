@@ -1,0 +1,20 @@
+{
+    "editor.formatOnSave": true,
+    "python.linting.flake8Enabled": true,
+    "python.linting.enabled": true,
+    "python.formatting.blackPath": "black",
+    "python.formatting.blackArgs": [
+        "--line-length",
+        "180"
+    ],
+    "python.linting.flake8Args": [
+        "--max-line-length=120",
+        "--ignore=E402,E501",
+    ],
+    "python.linting.pylintArgs": [
+        "--max-line-length=180"
+    ],
+    "python.formatting.autopep8Args": [
+        "--max-line-length=180"
+    ],
+}
