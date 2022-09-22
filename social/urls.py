@@ -8,5 +8,11 @@ urlpatterns = [
     path('signin/', views.signin, name='signin'),
     path('logout/', views.logout, name='logout'),
     path('settings/', views.setting, name='settings'),
-    path('upload/', views.upload, name='upload')
 ]
+
+htmx_urlpatterns = [
+    path('posts/', views.PostList.as_view(), name='post-list'),
+    path('upload/', views.upload, name='upload'),
+]
+
+urlpatterns += htmx_urlpatterns

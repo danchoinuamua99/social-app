@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, auth
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.views.generic.list import ListView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 from .models import Profile, Post
@@ -13,7 +15,7 @@ from social.forms import SignUpForm
 @login_required(login_url='signin')
 def index(request):
     user_profile = Profile.objects.get(user=request.user)
-    posts = Post.objects.all()
+    posts = Post.objects.all()[:2]
     return render(
         request,
         'index.html',
@@ -90,14 +92,21 @@ def setting(request):
 
 @login_required(login_url='signin')
 def upload(request):
-    if request.method == 'POST':
-        user = request.user.username
-        image = request.FILES.get('image_upload')
-        caption = request.POST['caption']
+    user = request.user.username
+    image = request.FILES.get('image_upload')
+    print(image)
+    caption = request.POST['caption']
+    Post.objects.create(user=user, image=image, caption=caption)
+    posts = Post.objects.order_by('-created_at')[:2]
 
-        new_post = Post.objects.create(user=user, image=image, caption=caption)
-        new_post.save()
+    return render(request, 'partials/post-list.html', {'posts': posts})
 
-        return redirect('/')
-    else:
-        return redirect('/')
+
+class PostList(LoginRequiredMixin, ListView):
+    template_name = 'partials/post-list.html'
+    model = Post
+    paginate_by = 1
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        return super().get_queryset().order_by('-created_at')[2:]
